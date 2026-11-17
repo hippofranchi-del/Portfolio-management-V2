@@ -1,5 +1,5 @@
-"""Figure 5. The fund against the security market line, at its own beta.
-Inputs as in Table 3 (see risk_model.py)."""
+"""Figure 3 of the essay. The fund against the security market line, at its own beta.
+Inputs as in Table 4 of the essay (see risk_model.py)."""
 from decimal import ROUND_HALF_UP, Decimal
 
 import matplotlib.pyplot as plt

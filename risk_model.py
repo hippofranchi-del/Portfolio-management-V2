@@ -1,19 +1,25 @@
-"""Inputs and calculations behind Table 3 and Figure 5 (Section 6).
+"""Inputs and calculations behind Table 4 and Figure 3 of the essay (Section 6).
 
 Expected 12-month risk and return of the fund against a passive S&P 500
-holding, using the CAPM and the single-index model (Bodie, Kane and Marcus).
+holding, using the CAPM (Jensen's alpha) and the Sharpe, Treynor and
+information ratios.
 """
 import csv
-import math
 
 from common import BETAS
 
-# ---- Inputs (sources as in the Table 3 note of the essay)
+# ---- Inputs (sources as in the Table 4 note of the essay)
 RF = 3.9            # risk-free rate, %: midpoint of the Fed's 3.75-4.00% target range (Section 2)
-RM = 8.1            # expected S&P 500 return, %: 5.1% ten-year Treasury yield + assumed 3% equity risk premium
-SIGMA_M = 15.6      # S&P 500 volatility, %: Ung, Luk and Kang (2014), Exhibit 11
-PAPER_BETA = 0.83   # S&P 500 Quality Index beta: Exhibit 11
-PAPER_TE = 5.5      # S&P 500 Quality Index tracking error, %: Exhibit 11
+RM = 8.1            # expected S&P 500 return, %: 5.1% ten-year Treasury yield + assumed 3% equity risk premium (Section 2)
+
+# Risk measured from Bloomberg: 104 weekly price returns over the two years to 16 November 2026,
+# for the S&P 500 and for the current 100 holdings at today's portfolio weights.
+SIGMA_M = 14.79     # S&P 500 volatility, % a year
+SIGMA_P = 18.75     # fund volatility, % a year
+TE = 7.18           # tracking error of the fund against the S&P 500, % a year
+# Price rather than total returns: dividends are small and similar for the fund and the index,
+# so using total returns would change these figures only marginally.
+
 EXCESS = {          # assumed excess return over the S&P 500, %
     "Fund: base case": 2.85,          # index's long-run record, back-test plus live (Valantasis, 2026)
     "Fund: live-record case": 0.35,   # live record since the July 2014 launch (lower bound)
@@ -32,23 +38,22 @@ def fund_beta(path=BETAS):
     return num / den, den
 
 
-def table3():
+def table4():
     beta_raw, coverage = fund_beta()
     beta = round(beta_raw, 2)  # the essay uses the beta rounded to two decimals
-    # Residual (non-market) risk implied by the paper: TE^2 = ((1 - beta)^2 * sm^2) + se^2
-    sigma_e = math.sqrt(PAPER_TE ** 2 - ((1 - PAPER_BETA) * SIGMA_M) ** 2)
-    sigma_p = math.sqrt((beta * SIGMA_M) ** 2 + sigma_e ** 2)          # fund volatility
-    te = math.sqrt(((beta - 1) * SIGMA_M) ** 2 + sigma_e ** 2)         # tracking error vs S&P 500
     required = RF + beta * (RM - RF)                                   # CAPM required return
 
     table = {"S&P 500": dict(expected=RM, excess=None, beta=1.0, vol=SIGMA_M, required=RM,
-                             alpha=0.0, sharpe=(RM - RF) / SIGMA_M, treynor=RM - RF, te=0.0, ir=None)}
+                             alpha=0.0, sharpe=(RM - RF) / SIGMA_M, treynor=RM - RF, te=None, ir=None)}
     for case, ex in EXCESS.items():
         er = RM + ex
-        table[case] = dict(expected=er, excess=ex, beta=beta, vol=sigma_p, required=required,
+        table[case] = dict(expected=er, excess=ex, beta=beta, vol=SIGMA_P, required=required,
                            alpha=er - required,                  # Jensen's (1968) alpha
-                           sharpe=(er - RF) / sigma_p,
+                           sharpe=(er - RF) / SIGMA_P,
                            treynor=(er - RF) / beta,
-                           te=te, ir=ex / te)                    # information ratio
-    info = dict(beta_raw=beta_raw, coverage=coverage, sigma_e=sigma_e)
+                           te=TE, ir=ex / TE)                    # information ratio
+    info = dict(beta_raw=beta_raw, coverage=coverage)
     return table, info
+
+
+table3 = table4  # older name, kept so existing scripts still run

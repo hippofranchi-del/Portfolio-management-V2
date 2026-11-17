@@ -1,15 +1,14 @@
-"""Table 3. Expected 12-month risk and return of the fund against the S&P 500.
+"""Table 4 of the essay. Expected 12-month risk and return of the fund against the S&P 500.
 
-Prints the table and writes it to table3_risk_return.csv.
+Prints the table and writes it to table3_risk_return.csv (the file keeps its original name).
 """
 import csv
 
 from common import OUTPUT
-from risk_model import table3
+from risk_model import table4
 
-table, info = table3()
-print(f"Fund beta {info['beta_raw']:.4f} (holdings with a beta: {info['coverage']:.1f}% of the fund); "
-      f"residual risk {info['sigma_e']:.2f}%")
+table, info = table4()
+print(f"Fund beta {info['beta_raw']:.4f} (holdings with a beta: {info['coverage']:.1f}% of the fund)")
 
 ROWS = [("Expected return", "expected", "{:.2f}%"), ("Assumed excess return", "excess", "{:.2f}%"),
         ("Beta", "beta", "{:.2f}"), ("Volatility", "vol", "{:.2f}%"),

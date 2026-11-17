@@ -2,10 +2,10 @@ Measure,S&P 500,Fund: base case,Fund: live-record case
 Expected return,8.10%,10.95%,8.45%
 Assumed excess return,n/a,2.85%,0.35%
 Beta,1.00,1.12,1.12
-Volatility,15.60%,18.12%,18.12%
+Volatility,14.79%,18.75%,18.75%
 Required return (CAPM),8.10%,8.60%,8.60%
 Jensen's alpha,0.00%,2.35%,−0.15%
-Sharpe ratio,0.27,0.39,0.25
+Sharpe ratio,0.28,0.38,0.24
 Treynor ratio,4.20%,6.29%,4.06%
-Tracking error,0.00%,5.17%,5.17%
-Information ratio,n/a,0.55,0.07
+Tracking error,n/a,7.18%,7.18%
+Information ratio,n/a,0.40,0.05
