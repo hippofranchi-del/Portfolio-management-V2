@@ -1,7 +1,7 @@
 """Shared settings, chart style and data loading for the Sections 5-6 figures.
 
 All portfolio data come from the Bloomberg workbook built for the essay
-(see data/README.md). The workbook implements the quality screen of
+(see README.md). The workbook implements the quality screen of
 Ung, Luk and Kang (2014) on the S&P 500, as of 16 November 2026.
 """
 import os
@@ -14,12 +14,11 @@ import matplotlib.pyplot as plt
 from openpyxl import load_workbook
 from PIL import Image
 
-ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "data"
-FIGURES = ROOT / "figures"
-OUTPUT = ROOT / "output"
-WORKBOOK = Path(os.environ.get("EC4430_WORKBOOK", DATA / "SP500_Quality_Portfolio_Builder_v2.xlsx"))
-BETAS = DATA / "betas_bloomberg.csv"
+# Every file sits in the repository's top folder: data, scripts and outputs.
+ROOT = Path(__file__).resolve().parent
+FIGURES = OUTPUT = ROOT
+WORKBOOK = Path(os.environ.get("EC4430_WORKBOOK", ROOT / "SP500_Quality_Portfolio_Builder_v2.xlsx"))
+BETAS = ROOT / "betas_bloomberg.csv"
 
 # ---- Chart style (same for every figure in the essay)
 BLUE, ORANGE, GREY, INK, MUTED = "#2B78D8", "#EC6A35", "#B8BEC6", "#1A1A1A", "#555555"
@@ -41,7 +40,6 @@ def title(ax, text, x=0.0):
 def save(fig, name, size=None):
     """Save at 200 dpi. If size=(w, h) is given, centre the chart on a white
     canvas of exactly that many pixels, the size of its frame in the essay."""
-    FIGURES.mkdir(exist_ok=True)
     path = FIGURES / name
     fig.savefig(path, dpi=200, bbox_inches="tight", pad_inches=0.08)
     plt.close(fig)
@@ -89,7 +87,7 @@ def load_workbook_data(path=WORKBOOK):
     """
     if not Path(path).exists():
         raise FileNotFoundError(
-            f"{path} not found. Put the Bloomberg workbook in data/ (see data/README.md).")
+            f"{path} not found. Put the Bloomberg workbook next to the scripts (see README.md).")
     wb = load_workbook(path, data_only=True)
 
     universe = []
